@@ -531,6 +531,16 @@ function App(props) {
               Polygon miStableDai
             </Link>
           </Menu.Item>
+          <Menu.Item key="/uniswapv2pair">
+            <Link
+              onClick={() => {
+                setRoute("/uniswapv2pair");
+              }}
+              to="/uniswapv2pair"
+            >
+              Polygon UniswapV2Pair MAI-DAI
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/mainnetdai">
             <Link
               onClick={() => {
@@ -633,6 +643,18 @@ function App(props) {
             <Contract
               name="MAI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.MAI}
+              signer={userSigner}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer="https://polygonscan.com/"
+              contractConfig={contractConfig}
+              chainId={137}
+            />
+          </Route>
+          <Route path="/uniswapv2pair">
+            <Contract
+              name="UniswapV2Pair"
+              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UniswapV2Pair}
               signer={userSigner}
               provider={mainnetProvider}
               address={address}
