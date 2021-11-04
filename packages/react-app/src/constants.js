@@ -14,6 +14,7 @@ export const NETWORKS = {
     chainId: 31337,
     blockExplorer: "",
     rpcUrl: "http://" + window.location.hostname + ":8545",
+    price: 1,
   },
   mainnet: {
     name: "mainnet",
@@ -70,7 +71,7 @@ export const NETWORKS = {
     chainId: 137,
     price: 1,
     gasPrice: 1000000000,
-    rpcUrl: "https://rpc-mainnet.maticvigil.com",
+    rpcUrl: "https://polygon-rpc.com", //"https://rpc-mainnet.maticvigil.com",
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://explorer-mainnet.maticvigil.com//",
   },

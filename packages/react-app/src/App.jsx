@@ -52,7 +52,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.matic; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -239,7 +239,7 @@ function App(props) {
   //
   // If you want to bring in the mainnet DAI contract it would look like:
   //const mainnetContracts = useContractLoader(localProvider /*mainnetProvider*/, contractConfig);
-  const mainnetContracts = useContractLoader(/*localProvider*/ mainnetProvider, contractConfig, 137);
+  const mainnetContracts = useContractLoader(/*localProvider*/ mainnetProvider, contractConfig /*, localChainId*/);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
