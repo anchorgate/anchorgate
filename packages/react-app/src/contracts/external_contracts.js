@@ -1957,6 +1957,10 @@ module.exports = {
         address: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
         abi: UChildERC20ProxyABI,
       },
+      ProxiedDAI: {
+        address: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+        abi: UChildDAIABI,
+      },
       UChildDAI: {
         address: "0x490e379C9cFF64944bE82b849F8FD5972C7999A7",
         abi: UChildDAIABI,

@@ -491,6 +491,16 @@ function App(props) {
               Polygon ERC20 Proxy
             </Link>
           </Menu.Item>
+          <Menu.Item key="/polygonproxieddai">
+            <Link
+              onClick={() => {
+                setRoute("/polygonproxieddai");
+              }}
+              to="/polygonproxieddai"
+            >
+              Polygon DAI (Proxied)
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/polygondai">
             <Link
               onClick={() => {
@@ -567,6 +577,18 @@ function App(props) {
             <Contract
               name="UChildERC20Proxy"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UChildERC20Proxy}
+              signer={userSigner}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer="https://polygonscan.com/"
+              contractConfig={contractConfig}
+              chainId={137}
+            />
+          </Route>
+          <Route path="/polygonproxieddai">
+            <Contract
+              name="ProxiedDAI"
+              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.ProxiedDAI}
               signer={userSigner}
               provider={mainnetProvider}
               address={address}
