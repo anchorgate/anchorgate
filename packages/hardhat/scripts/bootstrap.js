@@ -55,13 +55,8 @@ async function main() {
 
   console.log("whale MATIC balance is", hre.ethers.utils.formatUnits(await whaleSigner.getBalance(), 18));
 
+  console.log("recipient MATIC balance is", hre.ethers.utils.formatUnits(await recipientSigner.getBalance(), 18));
   //  console.log("whale MATIC ", await ethBal(insurWhaleAddress));
-  //XXX  console.log("my MATIC ", await ethBal(recipient));
-  // const provider = await hre.ethers.getDefaultProvider()
-  // 0 console.log('matics ', await provider.getBalance(recipient));
-   //console.log('matics ', await ethBal(recipientSigner, recipientSigner));//recipientSigner.getBalance(recipient));
-//XXX   console.log('matics ', await recipientSigner.getBalance(recipient));
-   //XXX console.log('matics ', await whaleSigner.getBalance(recipient));
 
   // using the whaleUsdc Contract object because I'm lazy, but I just need a way to do a read only call. sorry for the confusion
   console.log("recipient USDC balance is", await ercBal(whaleUsdc, recipient, 6));
@@ -71,13 +66,14 @@ async function main() {
 
   await whaleDai.transfer(recipient, '1234567890' + '000000000000');
 
-  await whaleSigner.sendTransaction({to: recipient.toString(), value: hre.ethers.utils.parseEther("60000")});
+  await whaleSigner.sendTransaction({to: recipient, value: hre.ethers.utils.parseEther("60000")});
 
   console.log("new USDC balance is", await ercBal(whaleUsdc, recipient, 6));
   console.log("new DAI balance is", await ercBal(whaleDai, recipient, 18));
+  console.log("new MATIC balance is", hre.ethers.utils.formatUnits(await recipientSigner.getBalance(), 18));
 
   const balanceAfterEth = await whaleSigner.getBalance();
-  console.log("whale ETH balance is", balanceAfterEth.toString());
+  console.log("whale MATIC balance is", balanceAfterEth.toString());
   console.log(
     "Congrats! You have successfully transferred tokens to yourself!"
   );
