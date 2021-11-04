@@ -511,6 +511,16 @@ function App(props) {
               Polygon DAI
             </Link>
           </Menu.Item>
+          <Menu.Item key="/polygonmai">
+            <Link
+              onClick={() => {
+                setRoute("/polygonmai");
+              }}
+              to="/polygonmai"
+            >
+              Polygon MAI
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/mainnetdai">
             <Link
               onClick={() => {
@@ -601,6 +611,18 @@ function App(props) {
             <Contract
               name="UChildDAI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UChildDAI}
+              signer={userSigner}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer="https://polygonscan.com/"
+              contractConfig={contractConfig}
+              chainId={137}
+            />
+          </Route>
+          <Route path="/polygonmai">
+            <Contract
+              name="MAI"
+              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.MAI}
               signer={userSigner}
               provider={mainnetProvider}
               address={address}
