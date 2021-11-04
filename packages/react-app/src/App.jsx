@@ -52,7 +52,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.matic; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -65,16 +65,18 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = navigator.onLine
+const scaffoldEthProvider = false && navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
-const poktMainnetProvider = navigator.onLine
+const poktMainnetProvider = false && navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider(
+      //"https://poly-rpc.gateway.pokt.network/v1/lb/611156b4a585a20035148406", // doesn't work
       "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
     )
   : null;
 const mainnetInfura = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  ? new ethers.providers.StaticJsonRpcProvider("https://polygon-mainnet.infura.io/v3/" + INFURA_ID)
+  //? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -236,7 +238,8 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
+  //const mainnetContracts = useContractLoader(localProvider /*mainnetProvider*/, contractConfig);
+  const mainnetContracts = useContractLoader(/*localProvider*/ mainnetProvider, contractConfig, 137);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -478,6 +481,26 @@ function App(props) {
               ExampleUI
             </Link>
           </Menu.Item>
+          <Menu.Item key="/polygonerc20proxy">
+            <Link
+              onClick={() => {
+                setRoute("/polygonerc20proxy");
+              }}
+              to="/polygonerc20proxy"
+            >
+              Polygon ERC20 Proxy
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/polygondai">
+            <Link
+              onClick={() => {
+                setRoute("/polygondai");
+              }}
+              to="/polygondai"
+            >
+              Polygon DAI
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/mainnetdai">
             <Link
               onClick={() => {
@@ -538,6 +561,30 @@ function App(props) {
               writeContracts={writeContracts}
               readContracts={readContracts}
               purpose={purpose}
+            />
+          </Route>
+          <Route path="/polygonerc20proxy">
+            <Contract
+              name="UChildERC20Proxy"
+              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UChildERC20Proxy}
+              signer={userSigner}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer="https://polygonscan.com/"
+              contractConfig={contractConfig}
+              chainId={137}
+            />
+          </Route>
+          <Route path="/polygondai">
+            <Contract
+              name="UChildDAI"
+              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UChildDAI}
+              signer={userSigner}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer="https://polygonscan.com/"
+              contractConfig={contractConfig}
+              chainId={137}
             />
           </Route>
           <Route path="/mainnetdai">
