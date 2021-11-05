@@ -36,9 +36,18 @@ contract YourContract {
     MyPair pair = MyPair(pairDAIMAI);
     return pair.getReserves();
   }
+
+  function myDaiBalance(address addr) external view returns (uint) {
+    ERC20 token = ERC20(token0DAI);
+    return token.balanceOf(addr);
+  }
 }
 
 interface MyPair {
   function name() external pure returns (string memory);
   function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
+}
+
+interface ERC20 {
+  function balanceOf(address owner) external view returns (uint);
 }
