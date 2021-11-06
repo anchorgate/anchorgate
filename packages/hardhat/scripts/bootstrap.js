@@ -28,23 +28,34 @@ async function main() {
     tokenABI
   );
 
+  const mimaticContract = new hre.ethers.Contract(
+    "0xa3Fa99A148fA48D14Ed51d610c367C61876997F1", 
+  tokenABI);
   // INSUR whale with a lot of MATIC, USDC, DAI
   const insurWhaleAddress = "0xd2171abb60d2994cf9acb767f2116cf47bbf596f";
   await hre.network.provider.request({
     method: "hardhat_impersonateAccount",
     params: [insurWhaleAddress],
   });
-
-  const recipient = "0x7212f07cc038cC838B0B7F7AE236bf98dae221d4"; // tomo - set your own here
+  const insurWhaleMimatic = "0x329c54289ff5d6b7b7dae13592c6b1eda1543ed4"
+  await hre.network.provider.request({
+    method: "hardhat_impersonateAccount",
+    params: [insurWhaleMimatic],
+  });
+  const whaleSigner2 = await hre.ethers.getSigner(insurWhaleMimatic);
+  const recipient = "0x774B4277A08d4e5c6089D918C5355700d2cEE1b5";
+  
   // XXX nope: const recipientSigner = await hre.ethers.getSigner(recipient);
 
   // Get the impersonated signer
   const whaleSigner = await hre.ethers.getSigner(insurWhaleAddress);
+ 
   const recipientSigner = await hre.ethers.getSigner(recipient);
-
+  console.log("old MATIC balance is", hre.ethers.utils.formatUnits(await recipientSigner.getBalance(), 18));
   // Get the connected versions of the Ethers Contract objects
   const whaleDai = await daiContract.connect(whaleSigner);
   const whaleUsdc = await usdcContract.connect(whaleSigner);
+  const whaleMai = await mimaticContract.connect(whaleSigner2);
 
   const ercBal = async (c, addr, dec) => hre.ethers.utils.formatUnits(await c.balanceOf(addr), dec);
   const ethBal = async (signer, addr) => hre.ethers.utils.formatEther(await signer.getBalance(addr));
@@ -62,14 +73,15 @@ async function main() {
   console.log("recipient USDC balance is", await ercBal(whaleUsdc, recipient, 6));
   console.log("recipient DAI balance is", await ercBal(whaleDai, recipient, 18));
 
+  await whaleMai.transfer(recipient, '1234567890' + '000000000000');
   await whaleUsdc.transfer(recipient, '1234567890' + '00');
-
   await whaleDai.transfer(recipient, '1234567890' + '000000000000');
 
   await whaleSigner.sendTransaction({to: recipient, value: hre.ethers.utils.parseEther("60000")});
 
   console.log("new USDC balance is", await ercBal(whaleUsdc, recipient, 6));
   console.log("new DAI balance is", await ercBal(whaleDai, recipient, 18));
+  console.log("new Mai balance is", await ercBal(whaleMai, recipient, 18));
   console.log("new MATIC balance is", hre.ethers.utils.formatUnits(await recipientSigner.getBalance(), 18));
 
   const balanceAfterEth = await whaleSigner.getBalance();
