@@ -90,7 +90,7 @@ contract YourContract {
     IERC20 token = IERC20(token0DAI);
     // uint256 MAX_INT = 2**256 - 1;
     token.transferFrom(msg.sender, address(pairDAIMAI), sellAmount);
-    MyPair(pairDAIMAI).swap(sellAmount, 0, address(this), "");
+    MyPair(pairDAIMAI).swap(0, sellAmount, address(this), "");
 
   }
 }
