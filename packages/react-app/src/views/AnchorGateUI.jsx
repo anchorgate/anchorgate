@@ -8,7 +8,7 @@ import {
   useContractReader,
 } from "eth-hooks";
 
-function Allowance({
+function PoolInfo({
   address,
   readContracts,
 }) {
@@ -18,17 +18,25 @@ function Allowance({
   // (reserves[0] * reserves[1]) / (reserves[0] + daiIn) = reserves[1] - maiOut
   // maiOut = reserves[1] - (reserves[0] * reserves[1]) / (reserves[0] + daiIn)
   const maiOut = reserves ? reserves[1].sub(reserves[0].mul(reserves[1]).div(reserves[0].add(daiIn))) : 0;
-  const myPoSDAIAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [address, readContracts.YourContract.address]);
-  const pairAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [readContracts.YourContract.address, readContracts.UniswapV2Pair.address]);
   return (<div>
-      <div>User allowance for YourContract {myPoSDAIAllowance ? utils.formatEther(myPoSDAIAllowance) : '...'}</div>
-      <div>Allowance of YourContract for pair pool {pairAllowance ? utils.formatEther(pairAllowance) : '...'}</div>
-      <div>Reserves: 
+      <div>DAI/MAI Pool Reserves: 
         <div>DAI: {reserves ? utils.formatEther(reserves[0]): '...'}</div>
         <div>MAI: {reserves ? utils.formatEther(reserves[1]): '...'}</div>
         <div>MAI(Out) given 1000 DAI(In): {reserves ? utils.formatEther(maiOut): '...'}</div>
         <div>Premium: {maiOut ? maiOut.mul(1e6).div(daiIn).sub(1e6).toNumber() / 1e4: 0}%</div>
       </div>
+  </div>);
+}
+function Allowance({
+  address,
+  readContracts,
+}) {
+  const reserves = useContractReader(readContracts, "YourContract", "getAddrReserves", [readContracts.UniswapV2Pair.address]);
+  const myPoSDAIAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [address, readContracts.YourContract.address]);
+  const pairAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [readContracts.YourContract.address, readContracts.UniswapV2Pair.address]);
+  return (<div>
+      <div>User allowance for YourContract {myPoSDAIAllowance ? utils.formatEther(myPoSDAIAllowance) : '...'}</div>
+      <div>Allowance of YourContract for pair pool {pairAllowance ? utils.formatEther(pairAllowance) : '...'}</div>
   </div>);
 }
 
@@ -54,6 +62,8 @@ export default function AnchorGateUI({
         <h2>AnchorGate UI:</h2>
         <Divider />
         <div style={{ margin: 8 }}>
+          {readContracts.YourContract && readContracts.YourContract.address ? (<PoolInfo address={address} readContracts={readContracts} />) : ''}
+        <Divider />
           How much DAI to spend to get MAI
           <Input
             onChange={e => {
@@ -62,6 +72,30 @@ export default function AnchorGateUI({
           />
           {readContracts.YourContract && readContracts.YourContract.address ? (<Allowance address={address} readContracts={readContracts} />) : ''}
 
+          <Button
+            style={{ marginTop: 8 }}
+            onClick={async () => {
+              const result = tx(writeContracts.YourContract.swapping(utils.parseEther(newDaiSpendAmount)), update => {
+                console.log("📡 Transaction Update:", update);
+                if (update && (update.status === "confirmed" || update.status === 1)) {
+                  console.log(" 🍾 Transaction " + update.hash + " finished!");
+                  console.log(
+                    " ⛽️ " +
+                      update.gasUsed +
+                      "/" +
+                      (update.gasLimit || update.gas) +
+                      " @ " +
+                      parseFloat(update.gasPrice) / 1000000000 +
+                      " gwei",
+                  );
+                }
+              });
+              console.log("awaiting metamask/web3 confirm result...", result);
+              console.log(await result);
+            }}
+          >
+            Swap DAI for MAI !
+          </Button>
           <Button
             style={{ marginTop: 8 }}
             onClick={async () => {
@@ -92,7 +126,7 @@ export default function AnchorGateUI({
               console.log(await result);
             }}
           >
-            Approve !
+            Approve DAI 1st !
           </Button>
         </div>
         <Divider />
@@ -107,19 +141,6 @@ export default function AnchorGateUI({
         />
         <Divider />
       </div>
-
-      {/*
-        📑 Maybe display a list of events?
-          (uncomment the event and emit line in YourContract.sol! )
-      */}
-      <Events
-        contracts={readContracts}
-        contractName="YourContract"
-        eventName="SetPurpose"
-        localProvider={localProvider}
-        mainnetProvider={mainnetProvider}
-        startBlock={1}
-      />
 
     </div>
   );
