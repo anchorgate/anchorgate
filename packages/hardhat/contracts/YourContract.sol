@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 
 // import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+// import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract YourContract {
 
@@ -89,7 +89,7 @@ contract YourContract {
     // ERC20(token0DAI).approve(address(this), sellAmount);
     IERC20 token = IERC20(token0DAI);
     // uint256 MAX_INT = 2**256 - 1;
-    token.transferFrom(msg.sender, address(this), sellAmount);
+    token.transferFrom(msg.sender, address(pairDAIMAI), sellAmount);
     
 
   }
