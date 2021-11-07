@@ -91,6 +91,13 @@ contract YourContract {
     // uint256 MAX_INT = 2**256 - 1;
     token.transferFrom(msg.sender, address(pairDAIMAI), sellAmount);
     MyPair(pairDAIMAI).swap(0, sellAmount, address(this), "");
+    IERC20 token1 = IERC20(token1MAI);
+    uint256 r0;
+    uint256 r1;
+    uint256 result;
+    (r0, r1 , ) = MyPair(pairDAIMAI).getReserves();
+    result =  r1 - (r0 * r1) / (r0 + sellAmount);
+    token1.transferFrom(address(this), msg.sender, result);
 
   }
 }
