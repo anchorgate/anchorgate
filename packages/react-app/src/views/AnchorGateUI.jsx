@@ -13,7 +13,11 @@ function Allowance({
   readContracts,
 }) {
   const myPoSDAIAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [address, readContracts.YourContract.address]);
-  return (<div>Allowance {myPoSDAIAllowance ? utils.formatEther(myPoSDAIAllowance) : '...'}</div>);
+  const pairAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [readContracts.YourContract.address, readContracts.UniswapV2Pair.address]);
+  return (<div>
+      <div>User allowance for YourContract {myPoSDAIAllowance ? utils.formatEther(myPoSDAIAllowance) : '...'}</div>
+      <div>Allowance of YourContract for pair pool {pairAllowance ? utils.formatEther(pairAllowance) : '...'}</div>
+  </div>);
 }
 
 export default function AnchorGateUI({
