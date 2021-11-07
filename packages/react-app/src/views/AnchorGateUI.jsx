@@ -12,11 +12,22 @@ function Allowance({
   address,
   readContracts,
 }) {
+  const reserves = useContractReader(readContracts, "YourContract", "getAddrReserves", [readContracts.UniswapV2Pair.address]);
+  const daiIn = utils.parseEther("1000"); // DAI
+  // (reserves[0] + daiIn) * (reserves[1] - maiOut) = (reserves[0] * reserves[1])
+  // (reserves[0] * reserves[1]) / (reserves[0] + daiIn) = reserves[1] - maiOut
+  // maiOut = reserves[1] - (reserves[0] * reserves[1]) / (reserves[0] + daiIn)
+  const maiOut = reserves ? reserves[1].sub(reserves[0].mul(reserves[1]).div(reserves[0].add(daiIn))) : 0;
   const myPoSDAIAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [address, readContracts.YourContract.address]);
   const pairAllowance = useContractReader(readContracts, "ProxiedDAI", "allowance", [readContracts.YourContract.address, readContracts.UniswapV2Pair.address]);
   return (<div>
       <div>User allowance for YourContract {myPoSDAIAllowance ? utils.formatEther(myPoSDAIAllowance) : '...'}</div>
       <div>Allowance of YourContract for pair pool {pairAllowance ? utils.formatEther(pairAllowance) : '...'}</div>
+      <div>Reserves: 
+        <div>DAI: {reserves ? utils.formatEther(reserves[0]): '...'}</div>
+        <div>MAI: {reserves ? utils.formatEther(reserves[1]): '...'}</div>
+        <div>maiOut given 1000 daiIn: {reserves ? utils.formatEther(maiOut): '...'}</div>
+      </div>
   </div>);
 }
 
@@ -32,7 +43,6 @@ export default function AnchorGateUI({
   mainnetContracts,
 }) {
   const [newDaiSpendAmount, setNewDaiSpendAmount] = useState("loading...");
-
 
   return (
     <div>
@@ -58,7 +68,7 @@ export default function AnchorGateUI({
               /* notice how you pass a call back for tx updates too */
                 console.log(mainnetContracts);
              // const result = await mainnetContracts.ProxiedDAI.approve("0x2B8F5e69C35c1Aff4CCc71458CA26c2F313c3ed3", "0x100000000000")
-              const deployedYourContract = "0x9A8Ec3B44ee760b629e204900c86d67414a67e8f";//"0x2B8F5e69C35c1Aff4CCc71458CA26c2F313c3ed3";
+              const deployedYourContract = readContracts.YourContract.address;
               const pairDAIMAI = "0x74214F5d8AA71b8dc921D8A963a1Ba3605050781";
               const contractAddr = deployedYourContract;
               const result = tx(mainnetContracts.ProxiedDAI.approve(contractAddr, utils.parseEther("1000")), update => {
