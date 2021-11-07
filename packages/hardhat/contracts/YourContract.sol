@@ -5,7 +5,9 @@ import "hardhat/console.sol";
 
 // import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-contract YourContract  {
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract YourContract {
 
   //event SetPurpose(address sender, string purpose);
 
@@ -44,8 +46,35 @@ contract YourContract  {
   }
 
   function myDaiBalance(address addr) external view returns (uint) {
-    ERC20 token = ERC20(token0DAI);
+    IERC20 token = IERC20(token0DAI);
     return token.balanceOf(addr);
+  }
+
+  function approval() public {
+    uint256 MAX_INT = 2**256 - 1;
+    IERC20 token = IERC20(token0DAI);
+    token.approve(address(pairDAIMAI), MAX_INT);
+  }
+
+  function approval2() public {
+    uint256 MAX_INT = 2**256 - 1;
+    IERC20 token = IERC20(token0DAI);
+    token.approve(address(this), MAX_INT);
+  }
+
+  function allowanceMai() external view returns (uint256) {
+    IERC20 token = IERC20(token0DAI);
+    return token.allowance(address(this), address(pairDAIMAI));
+  }
+
+  function allowanceMai2() external view returns (uint256) {
+    IERC20 token = IERC20(token0DAI);
+    return token.allowance(address(this), msg.sender);
+  }
+
+  function allowanceMai3() external view returns (uint256) {
+    IERC20 token = IERC20(token0DAI);
+    return token.allowance(msg.sender, address(this));
   }
 
   function swapping(uint256 sellAmount) public {
@@ -56,16 +85,12 @@ contract YourContract  {
    
     console.log(address(this));
     console.log(msg.sender);
+    // MyPair(pairDAIMAI).swap(1000, 0, address(this), abi.encode(uniVars));
     // ERC20(token0DAI).approve(address(this), sellAmount);
     IERC20 token = IERC20(token0DAI);
     // uint256 MAX_INT = 2**256 - 1;
-    bool result2 = token.approve(address(this), 500);
-    console.log(result2);
-    uint256 result = token.allowance(msg.sender, address(this));
-    console.log(result);
     token.transferFrom(msg.sender, address(this), sellAmount);
     
-    // MyPair(pairDAIMAI).swap(1000, 0, address(this), abi.encode(uniVars));
 
   }
 }
