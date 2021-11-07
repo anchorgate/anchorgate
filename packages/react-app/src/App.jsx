@@ -20,7 +20,7 @@ import {
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, AnchorGateUI, Hints, Subgraph } from "./views";
 
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -472,6 +472,7 @@ function App(props) {
               YourContract
             </Link>
           </Menu.Item>
+          {/*
           <Menu.Item key="/hints">
             <Link
               onClick={() => {
@@ -482,14 +483,15 @@ function App(props) {
               Hints
             </Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
+          */}
+          <Menu.Item key="/anchorgateui">
             <Link
               onClick={() => {
-                setRoute("/exampleui");
+                setRoute("/anchorgateui");
               }}
-              to="/exampleui"
+              to="/anchorgateui"
             >
-              ExampleUI
+              AnchorGate UI
             </Link>
           </Menu.Item>
           <Menu.Item key="/polygonerc20proxy">
@@ -598,6 +600,21 @@ function App(props) {
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
+            />
+          </Route>
+          <Route path="/anchorgateui">
+            <AnchorGateUI
+              address={address}
+              userSigner={userSigner}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              mainnetContracts={mainnetContracts}
+              purpose={purpose}
             />
           </Route>
           <Route path="/exampleui">
