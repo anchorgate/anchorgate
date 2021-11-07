@@ -43,8 +43,8 @@ export default function ExampleUI({
              // const result = await mainnetContracts.ProxiedDAI.approve("0x2B8F5e69C35c1Aff4CCc71458CA26c2F313c3ed3", "0x100000000000")
               const deployedYourContract = "0x9A8Ec3B44ee760b629e204900c86d67414a67e8f";//"0x2B8F5e69C35c1Aff4CCc71458CA26c2F313c3ed3";
               const pairDAIMAI = "0x74214F5d8AA71b8dc921D8A963a1Ba3605050781";
-              const contractAddr = pairDAIMAI;//deployedYourContract;
-              const result = tx(mainnetContracts.ProxiedDAI.approve(contractAddr, "10000000000000000000"), update => {
+              const contractAddr = deployedYourContract;
+              const result = tx(mainnetContracts.ProxiedDAI.approve(contractAddr, utils.parseEther("1000")), update => {
               //const result = tx(mainnetContracts.UChildDAI.approve(contractAddr, "0x10000000000000000000"), update => {
                 console.log("📡 Transaction Update:", update);
                 if (update && (update.status === "confirmed" || update.status === 1)) {
