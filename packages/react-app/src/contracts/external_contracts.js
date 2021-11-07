@@ -3872,6 +3872,34 @@ const UniswapV2PairABI = [
 
 // Mainnet DAI, Optimism and Arbitrium Rollup Contracts with local addresses
 module.exports = {
+  31337: {
+    contracts: {
+      UChildERC20Proxy: {
+        address: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+        abi: UChildERC20ProxyABI,
+      },
+      ProxiedDAI: {
+        address: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+        abi: UChildDAIABI,
+      },
+      UChildDAI: {
+        address: "0x490e379C9cFF64944bE82b849F8FD5972C7999A7",
+        abi: UChildDAIABI,
+      },
+      MAI: {
+        address: "0xa3fa99a148fa48d14ed51d610c367c61876997f1",
+        abi: MAIABI,
+      },
+      miStableDai: {
+        address: "0x6062E92599a77E62e0cC9749261eb2eaC3aBD44F",
+        abi: miStableDaiABI,
+      },
+      UniswapV2Pair: {
+        address: "0x74214f5d8aa71b8dc921d8a963a1ba3605050781",
+        abi: UniswapV2PairABI,
+      },
+    },
+  },
   137: {
     contracts: {
       UChildERC20Proxy: {

@@ -90,6 +90,8 @@ async function main() {
     "Congrats! You have successfully transferred tokens to yourself!"
   );
 
+  await whaleSigner.sendTransaction({to: recipient, value: hre.ethers.utils.parseEther("12345")});
+  console.log("new MATIC balance is", hre.ethers.utils.formatUnits(await recipientSigner.getBalance(), 18));
 
 }
 

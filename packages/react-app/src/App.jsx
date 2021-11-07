@@ -230,7 +230,7 @@ function App(props) {
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider, contractConfig);
+  const readContracts = useContractLoader(localProvider, contractConfig, localChainId);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -239,7 +239,8 @@ function App(props) {
   //
   // If you want to bring in the mainnet DAI contract it would look like:
   //const mainnetContracts = useContractLoader(localProvider /*mainnetProvider*/, contractConfig);
-  const mainnetContracts = useContractLoader(/*localProvider*/ mainnetProvider, contractConfig /*, localChainId*/);
+  //const mainnetContracts = useContractLoader(/*localProvider*/ mainnetProvider, contractConfig /*, localChainId*/);
+  const mainnetContracts = useContractLoader(/*localProvider*/ userSigner, contractConfig /*, localChainId*/);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -250,6 +251,16 @@ function App(props) {
   const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
+  const myPoSDAIBalance = useContractReader(mainnetContracts, "ProxiedDAI", "balanceOf", [address]);
+  console.log(myPoSDAIBalance);
+  console.log("PoS DAI: ", myPoSDAIBalance ? ethers.utils.formatEther(myPoSDAIBalance) : '?');
+  const deployedYourContract = "0x9A8Ec3B44ee760b629e204900c86d67414a67e8f";
+  const pairDAIMAI = "0x74214F5d8AA71b8dc921D8A963a1Ba3605050781";
+  const myPoSDAIAllowance = useContractReader(mainnetContracts, "ProxiedDAI", "allowance", [address, deployedYourContract]);
+  console.log(`PoS DAI allowance for deployedYourContract: `, myPoSDAIAllowance ? ethers.utils.formatEther(myPoSDAIAllowance) : '?');
+  const myContractPairDAIMAIPoSDAIAllowance = useContractReader(mainnetContracts, "ProxiedDAI", "allowance", [deployedYourContract, pairDAIMAI]);
+  console.log(`my contract PoS DAI allowance for pairDAIAMI: `, myContractPairDAIMAIPoSDAIAllowance ? ethers.utils.formatEther(myContractPairDAIMAIPoSDAIAllowance) : '?');
+
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
@@ -528,7 +539,7 @@ function App(props) {
               }}
               to="/mistabledai"
             >
-              Polygon miStableDai
+              Polygon miStableDai (anchor)
             </Link>
           </Menu.Item>
           <Menu.Item key="/uniswapv2pair">
@@ -600,6 +611,7 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
+              mainnetContracts={mainnetContracts}
               purpose={purpose}
             />
           </Route>

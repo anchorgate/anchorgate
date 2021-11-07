@@ -14,6 +14,7 @@ export default function ExampleUI({
   tx,
   readContracts,
   writeContracts,
+  mainnetContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
 
@@ -32,6 +33,39 @@ export default function ExampleUI({
               setNewPurpose(e.target.value);
             }}
           />
+
+          <Button
+            style={{ marginTop: 8 }}
+            onClick={async () => {
+              /* look how you call setPurpose on your contract: */
+              /* notice how you pass a call back for tx updates too */
+                console.log(mainnetContracts);
+             // const result = await mainnetContracts.ProxiedDAI.approve("0x2B8F5e69C35c1Aff4CCc71458CA26c2F313c3ed3", "0x100000000000")
+              const deployedYourContract = "0x9A8Ec3B44ee760b629e204900c86d67414a67e8f";//"0x2B8F5e69C35c1Aff4CCc71458CA26c2F313c3ed3";
+              const pairDAIMAI = "0x74214F5d8AA71b8dc921D8A963a1Ba3605050781";
+              const contractAddr = pairDAIMAI;//deployedYourContract;
+              const result = tx(mainnetContracts.ProxiedDAI.approve(contractAddr, "10000000000000000000"), update => {
+              //const result = tx(mainnetContracts.UChildDAI.approve(contractAddr, "0x10000000000000000000"), update => {
+                console.log("📡 Transaction Update:", update);
+                if (update && (update.status === "confirmed" || update.status === 1)) {
+                  console.log(" 🍾 Transaction " + update.hash + " finished!");
+                  console.log(
+                    " ⛽️ " +
+                      update.gasUsed +
+                      "/" +
+                      (update.gasLimit || update.gas) +
+                      " @ " +
+                      parseFloat(update.gasPrice) / 1000000000 +
+                      " gwei",
+                  );
+                }
+              });
+              console.log("awaiting metamask/web3 confirm result...", result);
+              console.log(await result);
+            }}
+          >
+            Approve !
+          </Button>
           <Button
             style={{ marginTop: 8 }}
             onClick={async () => {
