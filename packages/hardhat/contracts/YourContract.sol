@@ -88,7 +88,7 @@ contract YourContract {
     
     // ERC20(token0DAI).approve(address(this), sellAmount);
     IERC20 token = IERC20(token0DAI);
-    // uint256 MAX_INT = 2**256 - 1;
+    uint256 MAX_INT = 2**256 - 1;
     token.transferFrom(msg.sender, address(pairDAIMAI), sellAmount);
     MyPair(pairDAIMAI).swap(0, sellAmount, address(this), "");
     IERC20 token1 = IERC20(token1MAI);
@@ -97,7 +97,9 @@ contract YourContract {
     uint256 result;
     (r0, r1 , ) = MyPair(pairDAIMAI).getReserves();
     result =  r1 - (r0 * r1) / (r0 + sellAmount);
-    token1.transferFrom(address(this), msg.sender, result);
+    console.log(result/1e18);
+    token1.approve(address(this), MAX_INT);
+    token1.transferFrom(address(this), msg.sender, result/1e18);
 
   }
 }
