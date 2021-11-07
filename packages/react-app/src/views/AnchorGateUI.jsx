@@ -26,7 +26,8 @@ function Allowance({
       <div>Reserves: 
         <div>DAI: {reserves ? utils.formatEther(reserves[0]): '...'}</div>
         <div>MAI: {reserves ? utils.formatEther(reserves[1]): '...'}</div>
-        <div>maiOut given 1000 daiIn: {reserves ? utils.formatEther(maiOut): '...'}</div>
+        <div>MAI(Out) given 1000 DAI(In): {reserves ? utils.formatEther(maiOut): '...'}</div>
+        <div>Premium: {maiOut ? maiOut.mul(1e6).div(daiIn).sub(1e6).toNumber() / 1e4: 0}%</div>
       </div>
   </div>);
 }
